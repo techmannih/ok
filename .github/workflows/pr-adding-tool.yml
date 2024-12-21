@@ -98,7 +98,7 @@ jobs:
       - name: Push changes and create PR
         run: |
           # Step 6.1: Push the changes with upstream
-          git push --set-upstream origin $BRANCH_NAME || git push origin $BRANCH_NAME
+          git push --set-upstream origin $BRANCH_NAME
 
           # Step 6.2: Create the PR using GitHub CLI
           gh pr create --title "Add new tool: $TOOL_NAME" --body "This PR adds a new tool to the JSON Schema ecosystem." --base main --head $BRANCH_NAME
