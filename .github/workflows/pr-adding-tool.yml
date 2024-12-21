@@ -34,18 +34,23 @@ jobs:
           HOMEPAGE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Homepage URL:).*')
           SUPPORTED_DIALECTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Supported Dialects:).*')
 
-          echo "::set-output name=tool_name::$TOOL_NAME"
-          echo "::set-output name=description::$DESCRIPTION"
-          echo "::set-output name=tooling_types::$TOOLING_TYPES"
-          echo "::set-output name=languages::$LANGUAGES"
-          echo "::set-output name=environments::$ENVIRONMENTS"
-          echo "::set-output name=depends_on_validators::$DEPENDS_ON_VALIDATORS"
-          echo "::set-output name=creators::$CREATORS"
-          echo "::set-output name=maintainers::$MAINTAINERS"
-          echo "::set-output name=license::$LICENSE"
-          echo "::set-output name=source::$SOURCE"
-          echo "::set-output name=homepage::$HOMEPAGE"
-          echo "::set-output name=supported_dialects::$SUPPORTED_DIALECTS"
+          # Debugging echo statements
+          echo "TOOL_NAME=$TOOL_NAME"
+          echo "DESCRIPTION=$DESCRIPTION"
+          echo "TOOLING_TYPES=$TOOLING_TYPES"
+
+          echo "tool_name=$TOOL_NAME" >> $GITHUB_ENV
+          echo "description=$DESCRIPTION" >> $GITHUB_ENV
+          echo "tooling_types=$TOOLING_TYPES" >> $GITHUB_ENV
+          echo "languages=$LANGUAGES" >> $GITHUB_ENV
+          echo "environments=$ENVIRONMENTS" >> $GITHUB_ENV
+          echo "depends_on_validators=$DEPENDS_ON_VALIDATORS" >> $GITHUB_ENV
+          echo "creators=$CREATORS" >> $GITHUB_ENV
+          echo "maintainers=$MAINTAINERS" >> $GITHUB_ENV
+          echo "license=$LICENSE" >> $GITHUB_ENV
+          echo "source=$SOURCE" >> $GITHUB_ENV
+          echo "homepage=$HOMEPAGE" >> $GITHUB_ENV
+          echo "supported_dialects=$SUPPORTED_DIALECTS" >> $GITHUB_ENV
 
       # Step 3: Create a new branch for the PR
       - name: Create a new branch for the PR
@@ -56,20 +61,9 @@ jobs:
       # Step 4: Modify tooling-data.yaml
       - name: Update tooling-data.yaml
         run: |
-          TOOL_NAME="${{ steps.issue_details.outputs.tool_name }}"
-          DESCRIPTION="${{ steps.issue_details.outputs.description }}"
-          TOOLING_TYPES="${{ steps.issue_details.outputs.tooling_types }}"
-          LANGUAGES="${{ steps.issue_details.outputs.languages }}"
-          ENVIRONMENTS="${{ steps.issue_details.outputs.environments }}"
-          DEPENDS_ON_VALIDATORS="${{ steps.issue_details.outputs.depends_on_validators }}"
-          CREATORS="${{ steps.issue_details.outputs.creators }}"
-          MAINTAINERS="${{ steps.issue_details.outputs.maintainers }}"
-          LICENSE="${{ steps.issue_details.outputs.license }}"
-          SOURCE="${{ steps.issue_details.outputs.source }}"
-          HOMEPAGE="${{ steps.issue_details.outputs.homepage }}"
-          SUPPORTED_DIALECTS="${{ steps.issue_details.outputs.supported_dialects }}"
-
-          # Correcting indentation issues
+          # Debug output to check values
+          echo "Updating tooling-data.yaml with TOOL_NAME=$TOOL_NAME"
+          
           printf "\n- name: \"%s\"\n  description: \"%s\"\n  toolingTypes:\n    $(echo "$TOOLING_TYPES" | sed 's/,/\n    - /g')\n  languages:\n    $(echo "$LANGUAGES" | sed 's/,/\n    - /g')\n  maintainers:\n    $(echo "$MAINTAINERS" | sed 's/,/\n    - name: /g')\n  license: \"%s\"\n  source: \"%s\"\n  homepage: \"%s\"\n  supportedDialects:\n    draft:\n      $(echo "$SUPPORTED_DIALECTS" | sed 's/,/\n      /g')\n  lastUpdated: \"$(date +'%Y-%m-%d')\"\n" >> data/tooling-data.yaml
 
       # Step 5: Commit the changes
