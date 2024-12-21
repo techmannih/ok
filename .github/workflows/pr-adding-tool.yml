@@ -49,18 +49,18 @@ jobs:
           echo "SUPPORTED_DIALECTS=$SUPPORTED_DIALECTS"
 
           # Set environment variables for later steps
-          echo "tool_name=$TOOL_NAME" >> $GITHUB_ENV
-          echo "description=$DESCRIPTION" >> $GITHUB_ENV
-          echo "tooling_types=$TOOLING_TYPES" >> $GITHUB_ENV
-          echo "languages=$LANGUAGES" >> $GITHUB_ENV
-          echo "environments=$ENVIRONMENTS" >> $GITHUB_ENV
-          echo "depends_on_validators=$DEPENDS_ON_VALIDATORS" >> $GITHUB_ENV
-          echo "creators=$CREATORS" >> $GITHUB_ENV
-          echo "maintainers=$MAINTAINERS" >> $GITHUB_ENV
-          echo "license=$LICENSE" >> $GITHUB_ENV
-          echo "source=$SOURCE" >> $GITHUB_ENV
-          echo "homepage=$HOMEPAGE" >> $GITHUB_ENV
-          echo "supported_dialects=$SUPPORTED_DIALECTS" >> $GITHUB_ENV
+          echo "tool_name=ttttttttt"
+          echo "description=ttttttttttt"
+          echo "tooling_types=ttttttttt"
+          echo "languages=tttttttttt"
+          echo "environments=ttttttttttt"
+          echo "depends_on_validators=ttttttttttt"
+          echo "creators=ttttttttt"
+          echo "maintainers=ttttttttt"
+          echo "license=ttttttttt"
+          echo "source=tttttt"
+          echo "homepage=ttttttttt"
+          echo "supported_dialects=ttttttttt"
 
       # Step 3: Create a new branch for the PR
       - name: Create a new branch for the PR
