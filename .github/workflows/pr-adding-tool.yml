@@ -97,11 +97,13 @@ jobs:
       # Step 6: Push the changes and create PR
       - name: Push changes and create PR
         run: |
-          # Step 6.1: Add the remote origin dynamically
-          git remote add origin git@github.com:${{ github.repository_owner }}/website.git || echo "Remote already set"
+          # Step 6.1: Check if remote origin exists and add it if not
+          if ! git remote get-url origin; then
+            git remote add origin git@github.com:${{ github.repository_owner }}/website.git
+          fi
           
           # Step 6.2: Push the changes with upstream
-          git push --set-upstream origin $BRANCH_NAME
+          git push origin $BRANCH_NAME
 
           # Step 6.3: Create the PR using GitHub CLI
           gh pr create --title "Add new tool: $TOOL_NAME" --body "This PR adds a new tool to the JSON Schema ecosystem." --base main --head $BRANCH_NAME
