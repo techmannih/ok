@@ -20,21 +20,23 @@ jobs:
         run: |
           ISSUE_BODY="${{ github.event.issue.body }}"
 
-          TOOL_NAME=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Name:).*')
-          DESCRIPTION=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Description:).*')
-          ACTION_TYPE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Action Type:).*')
-          TOOLING_TYPES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tooling Types:).*')
-          LANGUAGES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Languages:).*')
-          ENVIRONMENTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Environments:).*')
-          DEPENDS_ON_VALIDATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Dependencies on Validators:).*')
-          CREATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Creators:).*')
-          MAINTAINERS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Maintainers:).*')
-          LICENSE=$(echo "$ISSUE_BODY" | grep -oP '(?<=License:).*')
-          SOURCE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Source Repository URL:).*')
-          HOMEPAGE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Homepage URL:).*')
-          SUPPORTED_DIALECTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Supported Dialects:).*')
+          # Debugging: Print the entire ISSUE_BODY
+          echo "ISSUE_BODY=$ISSUE_BODY"
+          
+          TOOL_NAME=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Name:).*' || echo "Tool Name not found")
+          DESCRIPTION=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Description:).*' || echo "Tool Description not found")
+          ACTION_TYPE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Action Type:).*' || echo "Action Type not found")
+          TOOLING_TYPES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tooling Types:).*' || echo "Tooling Types not found")
+          LANGUAGES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Languages:).*' || echo "Languages not found")
+          ENVIRONMENTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Environments:).*' || echo "Environments not found")
+          DEPENDS_ON_VALIDATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Dependencies on Validators:).*' || echo "Dependencies on Validators not found")
+          CREATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Creators:).*' || echo "Creators not found")
+          MAINTAINERS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Maintainers:).*' || echo "Maintainers not found")
+          LICENSE=$(echo "$ISSUE_BODY" | grep -oP '(?<=License:).*' || echo "License not found")
+          SOURCE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Source Repository URL:).*' || echo "Source URL not found")
+          HOMEPAGE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Homepage URL:).*' || echo "Homepage URL not found")
+          SUPPORTED_DIALECTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Supported Dialects:).*' || echo "Supported Dialects not found")
 
-          # Debugging echo statements
           echo "TOOL_NAME=$TOOL_NAME"
           echo "DESCRIPTION=$DESCRIPTION"
           echo "TOOLING_TYPES=$TOOLING_TYPES"
