@@ -19,7 +19,7 @@ jobs:
         id: issue_details
         run: |
           ISSUE_BODY="${{ github.event.issue.body }}"
-          
+
           TOOL_NAME=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Tool Name\n)[^\n]*' || echo "Tool Name not found")
           DESCRIPTION=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Tool Description\n)[^\n]*' || echo "Tool Description not found")
           ACTION_TYPE=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Action Type\n)[^\n]*' || echo "Action Type not found")
@@ -49,18 +49,18 @@ jobs:
           echo "SUPPORTED_DIALECTS=$SUPPORTED_DIALECTS"
 
           # Set environment variables for later steps
-          echo "tool_name=ttttttttt"
-          echo "description=ttttttttttt"
-          echo "tooling_types=ttttttttt"
-          echo "languages=tttttttttt"
-          echo "environments=ttttttttttt"
-          echo "depends_on_validators=ttttttttttt"
-          echo "creators=ttttttttt"
-          echo "maintainers=ttttttttt"
-          echo "license=ttttttttt"
-          echo "source=tttttt"
-          echo "homepage=ttttttttt"
-          echo "supported_dialects=ttttttttt"
+          echo "tool_name=$TOOL_NAME"
+          echo "description=$DESCRIPTION"
+          echo "tooling_types=$TOOLING_TYPES"
+          echo "languages=$LANGUAGES"
+          echo "environments=$ENVIRONMENTS"
+          echo "depends_on_validators=$DEPENDS_ON_VALIDATORS"
+          echo "creators=$CREATORS"
+          echo "maintainers=$MAINTAINERS"
+          echo "license=$LICENSE"
+          echo "source=$SOURCE"
+          echo "homepage=$HOMEPAGE"
+          echo "supported_dialects=$SUPPORTED_DIALECTS"
 
       # Step 3: Create a new branch for the PR
       - name: Create a new branch for the PR
@@ -97,7 +97,10 @@ jobs:
       # Step 6: Push the changes and create PR
       - name: Push changes and create PR
         run: |
-          git push --set-upstream origin $BRANCH_NAME
+          # Step 6.1: Push the changes with upstream
+          git push --set-upstream origin $BRANCH_NAME || git push origin $BRANCH_NAME
+
+          # Step 6.2: Create the PR using GitHub CLI
           gh pr create --title "Add new tool: $TOOL_NAME" --body "This PR adds a new tool to the JSON Schema ecosystem." --base main --head $BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
