@@ -1,0 +1,89 @@
+name: Create PR for New Tool Addition/Modification
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    if: github.event.issue.title == 'Add or Modify [Tool Name] in JSON Schema Ecosystem'
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Parse issue content using GitHub API
+      - name: Get issue details
+        id: issue_details
+        run: |
+          ISSUE_BODY="${{ github.event.issue.body }}"
+
+          TOOL_NAME=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Name:).*')
+          DESCRIPTION=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tool Description:).*')
+          ACTION_TYPE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Action Type:).*')
+          TOOLING_TYPES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Tooling Types:).*')
+          LANGUAGES=$(echo "$ISSUE_BODY" | grep -oP '(?<=Languages:).*')
+          ENVIRONMENTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Environments:).*')
+          DEPENDS_ON_VALIDATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Dependencies on Validators:).*')
+          CREATORS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Creators:).*')
+          MAINTAINERS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Maintainers:).*')
+          LICENSE=$(echo "$ISSUE_BODY" | grep -oP '(?<=License:).*')
+          SOURCE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Source Repository URL:).*')
+          HOMEPAGE=$(echo "$ISSUE_BODY" | grep -oP '(?<=Homepage URL:).*')
+          SUPPORTED_DIALECTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=Supported Dialects:).*')
+
+          echo "::set-output name=tool_name::$TOOL_NAME"
+          echo "::set-output name=description::$DESCRIPTION"
+          echo "::set-output name=tooling_types::$TOOLING_TYPES"
+          echo "::set-output name=languages::$LANGUAGES"
+          echo "::set-output name=environments::$ENVIRONMENTS"
+          echo "::set-output name=depends_on_validators::$DEPENDS_ON_VALIDATORS"
+          echo "::set-output name=creators::$CREATORS"
+          echo "::set-output name=maintainers::$MAINTAINERS"
+          echo "::set-output name=license::$LICENSE"
+          echo "::set-output name=source::$SOURCE"
+          echo "::set-output name=homepage::$HOMEPAGE"
+          echo "::set-output name=supported_dialects::$SUPPORTED_DIALECTS"
+
+      # Step 3: Create a new branch for the PR
+      - name: Create a new branch for the PR
+        run: |
+          BRANCH_NAME="add-tool-${{ github.event.issue.number }}"
+          git checkout -b $BRANCH_NAME
+
+      # Step 4: Modify tooling-data.yaml
+      - name: Update tooling-data.yaml
+        run: |
+          TOOL_NAME="${{ steps.issue_details.outputs.tool_name }}"
+          DESCRIPTION="${{ steps.issue_details.outputs.description }}"
+          TOOLING_TYPES="${{ steps.issue_details.outputs.tooling_types }}"
+          LANGUAGES="${{ steps.issue_details.outputs.languages }}"
+          ENVIRONMENTS="${{ steps.issue_details.outputs.environments }}"
+          DEPENDS_ON_VALIDATORS="${{ steps.issue_details.outputs.depends_on_validators }}"
+          CREATORS="${{ steps.issue_details.outputs.creators }}"
+          MAINTAINERS="${{ steps.issue_details.outputs.maintainers }}"
+          LICENSE="${{ steps.issue_details.outputs.license }}"
+          SOURCE="${{ steps.issue_details.outputs.source }}"
+          HOMEPAGE="${{ steps.issue_details.outputs.homepage }}"
+          SUPPORTED_DIALECTS="${{ steps.issue_details.outputs.supported_dialects }}"
+
+          # Correcting indentation issues
+          printf "\n- name: \"%s\"\n  description: \"%s\"\n  toolingTypes:\n    $(echo "$TOOLING_TYPES" | sed 's/,/\n    - /g')\n  languages:\n    $(echo "$LANGUAGES" | sed 's/,/\n    - /g')\n  maintainers:\n    $(echo "$MAINTAINERS" | sed 's/,/\n    - name: /g')\n  license: \"%s\"\n  source: \"%s\"\n  homepage: \"%s\"\n  supportedDialects:\n    draft:\n      $(echo "$SUPPORTED_DIALECTS" | sed 's/,/\n      /g')\n  lastUpdated: \"$(date +'%Y-%m-%d')\"\n" >> data/tooling-data.yaml
+
+      # Step 5: Commit the changes
+      - name: Commit changes to tooling-data.yaml
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/tooling-data.yaml
+          git commit -m "Add new tool: $TOOL_NAME"
+
+      # Step 6: Push the changes and create a PR
+      - name: Push changes and create PR
+        run: |
+          git push origin $BRANCH_NAME
+          gh pr create --title "Add new tool: $TOOL_NAME" --body "This PR adds a new tool to the JSON Schema ecosystem." --base main --head $BRANCH_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
