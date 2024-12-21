@@ -19,10 +19,7 @@ jobs:
         id: issue_details
         run: |
           ISSUE_BODY="${{ github.event.issue.body }}"
-
-          # Debugging: Print entire ISSUE_BODY
-          echo "$ISSUE_BODY"
-
+          
           TOOL_NAME=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Tool Name\n)[^\n]*' || echo "Tool Name not found")
           DESCRIPTION=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Tool Description\n)[^\n]*' || echo "Tool Description not found")
           ACTION_TYPE=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Action Type\n)[^\n]*' || echo "Action Type not found")
@@ -37,10 +34,21 @@ jobs:
           HOMEPAGE=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Homepage URL\n)[^\n]*' || echo "Homepage URL not found")
           SUPPORTED_DIALECTS=$(echo "$ISSUE_BODY" | grep -oP '(?<=### Supported Dialects\n)[^\n]*' || echo "Supported Dialects not found")
 
+          # Output the values for debugging purposes
           echo "TOOL_NAME=$TOOL_NAME"
           echo "DESCRIPTION=$DESCRIPTION"
           echo "TOOLING_TYPES=$TOOLING_TYPES"
+          echo "LANGUAGES=$LANGUAGES"
+          echo "ENVIRONMENTS=$ENVIRONMENTS"
+          echo "DEPENDS_ON_VALIDATORS=$DEPENDS_ON_VALIDATORS"
+          echo "CREATORS=$CREATORS"
+          echo "MAINTAINERS=$MAINTAINERS"
+          echo "LICENSE=$LICENSE"
+          echo "SOURCE=$SOURCE"
+          echo "HOMEPAGE=$HOMEPAGE"
+          echo "SUPPORTED_DIALECTS=$SUPPORTED_DIALECTS"
 
+          # Set environment variables for later steps
           echo "tool_name=$TOOL_NAME" >> $GITHUB_ENV
           echo "description=$DESCRIPTION" >> $GITHUB_ENV
           echo "tooling_types=$TOOLING_TYPES" >> $GITHUB_ENV
